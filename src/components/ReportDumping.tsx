@@ -1,5 +1,6 @@
-import { useState } from 'react';
-import { MapPin, Phone, Upload, AlertCircle } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { MapPin, Phone, Upload, AlertCircle, Hash } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -11,20 +12,31 @@ const ReportDumping = () => {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // 👇 GET BIN ID FROM QR URL
+  const [searchParams] = useSearchParams();
+  const [binId, setBinId] = useState("");
+
+  useEffect(() => {
+    const id = searchParams.get("binId");
+    if (id) {
+      setBinId(id);
+    }
+  }, [searchParams]);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
-    // Simulate form submission
+
     await new Promise(resolve => setTimeout(resolve, 1500));
-    
+
     toast({
       title: "Report Submitted Successfully!",
-      description: "Thank you for helping keep our environment clean. Your report has been received.",
+      description: `Report recorded for Dustbin ${binId || "Manual Entry"}. Thank you for helping keep our environment clean.`,
     });
-    
+
     setIsSubmitting(false);
     (e.target as HTMLFormElement).reset();
+    setBinId(""); // optional reset
   };
 
   return (
@@ -47,8 +59,25 @@ const ReportDumping = () => {
               Please provide as much detail as possible to help us respond quickly
             </CardDescription>
           </CardHeader>
+
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
+
+              {/* BIN SERIAL NUMBER (AUTO FILLED FROM QR) */}
+              <div className="space-y-2">
+                <Label htmlFor="binId" className="flex items-center gap-2">
+                  <Hash className="w-4 h-4 text-primary" />
+                  Dustbin Serial Number
+                </Label>
+                <Input
+                  id="binId"
+                  value={binId}
+                  placeholder="Scan QR to auto-fill"
+                  readOnly
+                  className="w-full bg-muted"
+                />
+              </div>
+
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label htmlFor="location" className="flex items-center gap-2">
