@@ -7,7 +7,9 @@ const AdminDashboard = () => {
   const fetchReports = async () => {
     try {
 
-      const res = await fetch("https://go-clean-8c5n.onrender.com/api/reports");
+      const res = await fetch(
+        "https://go-clean-8c5n.onrender.com/api/report/reports"
+      );
 
       const data = await res.json();
 
@@ -57,6 +59,7 @@ const AdminDashboard = () => {
                 <a
                   href={report.location}
                   target="_blank"
+                  rel="noreferrer"
                   className="text-blue-600 underline"
                 >
                   View Map
