@@ -10,8 +10,8 @@ import { useToast } from "@/hooks/use-toast";
 const ReportDumping = () => {
 
   const { toast } = useToast();
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [searchParams] = useSearchParams();
 
   const [binId, setBinId] = useState("");
@@ -20,18 +20,19 @@ const ReportDumping = () => {
 
   const [phone, setPhone] = useState("");
   const [description, setDescription] = useState("");
-
   const [file, setFile] = useState(null);
 
-  // QR bin detection
+  // Detect bin ID from QR
   useEffect(() => {
     const id = searchParams.get("binId");
     if (id) setBinId(id);
   }, [searchParams]);
 
-  // GPS detection
+  // Detect GPS
   useEffect(() => {
+
     if (navigator.geolocation) {
+
       navigator.geolocation.getCurrentPosition(
         (position) => {
 
@@ -45,7 +46,9 @@ const ReportDumping = () => {
           setLocation("Location access denied. Enter manually.");
         }
       );
+
     }
+
   }, []);
 
   const handleSubmit = async (e) => {
@@ -77,7 +80,7 @@ const ReportDumping = () => {
       }
 
       const response = await fetch(
-        "https://go-clean-8c5n.onrender.com/api/report/reports",
+        "https://go-clean-8c5n.onrender.com/api/report",
         {
           method: "POST",
           body: formData
@@ -133,6 +136,7 @@ const ReportDumping = () => {
 
         {/* FLOW */}
         <div className="flex items-center justify-center gap-6 mb-6">
+
           <div className="bg-green-700 text-white px-6 py-2 rounded-lg shadow">
             Camera
           </div>
@@ -142,9 +146,10 @@ const ReportDumping = () => {
           <div className="bg-green-700 text-white px-6 py-2 rounded-lg shadow">
             Data
           </div>
+
         </div>
 
-        {/* FORM CARD */}
+        {/* FORM */}
         <div className="bg-white rounded-3xl p-8 shadow-2xl">
 
           <h2 className="text-3xl font-bold mb-8 text-center text-gray-800">
@@ -197,11 +202,7 @@ const ReportDumping = () => {
                 Address (Auto GPS)
               </Label>
 
-              <Input
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                required
-              />
+              <Input value={location} readOnly />
 
             </div>
 
@@ -270,13 +271,10 @@ const ReportDumping = () => {
 
         </div>
 
-        <p className="text-center text-white mt-6 text-sm italic">
-          True development begins with a clean and conscious community.
-        </p>
-
       </div>
 
     </section>
+
   );
 };
 
