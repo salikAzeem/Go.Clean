@@ -16,7 +16,7 @@ const BinQRGenerator = () => {
 
       <div style={{ display: "flex", flexWrap: "wrap", gap: 30 }}>
         {bins.map((bin) => {
-          const url = `${window.location.origin}/report-dumping?binId=${bin}`;
+          const url = `${window.location.origin}/report?binId=${bin}`;
 
           return (
             <div key={bin} style={{ textAlign: "center" }}>
