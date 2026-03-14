@@ -3,9 +3,9 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Camera } from "lucide-react";
 
-import heroEnvironment from "@/assets/hero-environment.jpg";
-import heroGreenCity from "@/assets/hero-green-city.jpg";
-import heroOcean from "@/assets/hero-ocean.jpg";
+import heroEnvironment from "@/assets/hero-environment.png";
+import heroGreenCity from "@/assets/hero-green-city.jpeg";
+import heroOcean from "@/assets/hero-ocean.webp";
 
 const images = [
   heroEnvironment,

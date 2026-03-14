@@ -1,4 +1,4 @@
-import heroEnvironment from '@/assets/hero-environment.jpg';
+import heroEnvironment from '@/assets/hero-environment.png';
 
 const RecyclingIdeas = () => {
 
