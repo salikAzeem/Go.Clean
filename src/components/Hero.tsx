@@ -18,7 +18,6 @@ const Hero = () => {
   const navigate = useNavigate();
   const [currentImage, setCurrentImage] = useState(0);
 
-  // Background slider
   useEffect(() => {
 
     const interval = setInterval(() => {
@@ -31,7 +30,7 @@ const Hero = () => {
 
   return (
 
-    <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-4 overflow-hidden">
+    <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-5 overflow-hidden">
 
       {/* Background Images */}
       {images.map((img, index) => (
@@ -46,22 +45,20 @@ const Hero = () => {
 
       ))}
 
-      {/* Dark overlay */}
+      {/* Overlay */}
       <div className="absolute inset-0 bg-black/50" />
 
-      {/* CENTER CONTENT */}
+      {/* TEXT CONTENT */}
       <div className="relative z-10 max-w-3xl text-white">
 
-        {/* MAIN QUOTE */}
-        <h1 className="text-4xl md:text-6xl font-semibold leading-tight mb-6">
+        <h1 className="text-2xl sm:text-3xl md:text-5xl font-semibold leading-tight mb-6">
 
           Cleanliness is not a duty imposed by law,<br />
           but a responsibility owed to society.
 
         </h1>
 
-        {/* SUB TEXT */}
-        <p className="text-lg md:text-xl italic opacity-90">
+        <p className="text-sm sm:text-base md:text-lg italic opacity-90">
           Every small action today creates a cleaner tomorrow.
         </p>
 
@@ -69,18 +66,18 @@ const Hero = () => {
 
 
       {/* BOTTOM BUTTONS */}
-      <div className="absolute bottom-16 z-10 flex flex-col sm:flex-row gap-6">
+      <div className="absolute bottom-24 sm:bottom-16 z-10 flex flex-col sm:flex-row gap-4 sm:gap-6">
 
         <Button
           onClick={() => navigate("/recycling")}
-          className="w-56 h-14 bg-green-600 hover:bg-green-700 text-white text-lg rounded-full shadow-lg"
+          className="w-48 sm:w-56 h-12 sm:h-14 bg-green-600 hover:bg-green-700 text-white text-base sm:text-lg rounded-full shadow-lg"
         >
           Recycling Ideas
         </Button>
 
         <Button
           onClick={() => navigate("/report")}
-          className="w-56 h-14 bg-green-600 hover:bg-green-700 text-white text-lg rounded-full shadow-lg"
+          className="w-48 sm:w-56 h-12 sm:h-14 bg-green-600 hover:bg-green-700 text-white text-base sm:text-lg rounded-full shadow-lg"
         >
           Report
         </Button>
@@ -88,13 +85,13 @@ const Hero = () => {
       </div>
 
 
-      {/* FLOATING CAMERA BUTTON (BOTTOM RIGHT) */}
+      {/* FLOATING CAMERA BUTTON */}
       <button
-  onClick={() => navigate("/scan")}
-  className="fixed bottom-8 right-8 z-20 bg-white hover:bg-gray-100 text-black p-4 rounded-full shadow-xl transition transform hover:scale-110"
->
-  <Camera size={28} />
-</button>
+        onClick={() => navigate("/scan")}
+        className="fixed bottom-6 right-6 sm:bottom-8 sm:right-8 z-20 bg-white hover:bg-gray-100 text-black p-3 sm:p-4 rounded-full shadow-xl transition transform hover:scale-110"
+      >
+        <Camera size={26} />
+      </button>
 
     </section>
 
