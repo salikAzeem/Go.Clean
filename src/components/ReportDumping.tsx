@@ -77,7 +77,7 @@ const ReportDumping = () => {
       }
 
       const response = await fetch(
-        "https://go-clean-8c5n.onrender.com/api/report",
+        "https://go-clean-8c5n.onrender.com/api/report/reports",
         {
           method: "POST",
           body: formData
