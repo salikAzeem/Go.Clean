@@ -1,4 +1,4 @@
-import { Leaf } from 'lucide-react';
+import logo from "@/assets/logo.jpg";
 import { NavLink } from 'react-router-dom';
 
 const Navbar = () => {
@@ -12,7 +12,11 @@ const Navbar = () => {
             to="/"
             className="flex items-center gap-2"
           >
-            <Leaf className="w-7 h-7 text-green-400" />
+            <img
+              src={logo}
+              alt="GO CLEAN"
+              className="h-8 w-auto"
+            />
             <span className="text-xl font-bold tracking-wide">GO.CLEAN</span>
           </NavLink>
 
@@ -27,14 +31,7 @@ const Navbar = () => {
                 }`
               }
             >
-              {({ isActive }) => (
-                <span className="relative">
-                  HOME
-                  {isActive && (
-                    <span className=" left-0 -bottom-1 w-full h-[2px] bg-green-400 rounded"></span>
-                  )}
-                </span>
-              )}
+              HOME
             </NavLink>
 
             <NavLink
@@ -45,14 +42,7 @@ const Navbar = () => {
                 }`
               }
             >
-              {({ isActive }) => (
-                <span className="relative">
-                  RECYCLING
-                  {isActive && (
-                    <span className="left-0 -bottom-1 w-full h-[2px] bg-green-400 rounded"></span>
-                  )}
-                </span>
-              )}
+              RECYCLING
             </NavLink>
 
             <NavLink
@@ -63,14 +53,7 @@ const Navbar = () => {
                 }`
               }
             >
-              {({ isActive }) => (
-                <span className="relative">
-                  REPORT
-                  {isActive && (
-                    <span className="left-0 -bottom-1 w-full h-[2px] bg-green-400 rounded"></span>
-                  )}
-                </span>
-              )}
+              REPORT
             </NavLink>
 
             <NavLink
@@ -81,14 +64,7 @@ const Navbar = () => {
                 }`
               }
             >
-              {({ isActive }) => (
-                <span className="relative">
-                  ABOUT
-                  {isActive && (
-                    <span className="left-0 -bottom-1 w-full h-[2px] bg-green-400 rounded"></span>
-                  )}
-                </span>
-              )}
+              ABOUT
             </NavLink>
 
           </div>
