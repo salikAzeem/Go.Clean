@@ -1,6 +1,6 @@
 import express from "express";
 import multer from "multer";
-import { createReport } from "../controllers/reportController.js";
+import { createReport, getReports } from "../controllers/reportController.js";
 
 const router = express.Router();
 
@@ -13,6 +13,10 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
+/* Submit Report */
 router.post("/", upload.single("image"), createReport);
+
+/* Get All Reports (Admin Dashboard) */
+router.get("/reports", getReports);
 
 export default router;
