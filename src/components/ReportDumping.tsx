@@ -65,7 +65,7 @@ const ReportDumping = () => {
         details
       };
 
-      const response = await fetch("http://localhost:5000/api/report", {
+      const response = await fetch("https://go-clean-8c5n.onrender.com/api/report", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
