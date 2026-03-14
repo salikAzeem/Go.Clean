@@ -17,8 +17,6 @@ import ReportDumping from "./components/ReportDumping";
 // New UI Pages
 import Hero from "./components/Hero";
 import RecyclingIdeas from "./components/RecyclingIdeas";
-import ReportFlow from "./components/ReportFlow";
-import CameraPage from "./components/CameraPage";
 import About from "./components/About";
 
 const queryClient = new QueryClient();
@@ -42,14 +40,9 @@ const App = () => (
             {/* RECYCLING */}
             <Route path="/recycling" element={<RecyclingIdeas />} />
 
-            {/* REPORT FLOW */}
-            <Route path="/report" element={<ReportFlow />} />
-
-            {/* CAMERA */}
-            <Route path="/camera" element={<CameraPage />} />
-
+         
             {/* REPORT FORM (QR redirect) */}
-            <Route path="/report-dumping" element={<ReportDumping />} />
+            <Route path="/report" element={<ReportDumping />} />
 
             {/* ABOUT */}
             <Route path="/about" element={<About />} />

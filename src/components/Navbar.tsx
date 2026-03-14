@@ -1,52 +1,96 @@
 import { Leaf } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 const Navbar = () => {
-  const navigate = useNavigate();
-
   return (
-    <nav className="fixed top-0 left-0 w-full z-50 bg-[#1f3b57]/80 backdrop-blur-md shadow-lg">
+    <nav className="fixed top-0 left-0 w-full z-50 bg-[#1f3b57]/90 backdrop-blur-md shadow-lg">
       <div className="max-w-7xl mx-auto px-7">
-        <div className="flex items-center justify-between h-12 text-white">
+        <div className="flex items-center justify-between h-14 text-white">
 
           {/* LOGO */}
-          <div
-            className="flex items-center gap-2 cursor-pointer"
-            onClick={() => navigate('/')}
+          <NavLink
+            to="/"
+            className="flex items-center gap-2"
           >
             <Leaf className="w-7 h-7 text-green-400" />
             <span className="text-xl font-bold tracking-wide">GO.CLEAN</span>
-          </div>
+          </NavLink>
 
           {/* MENU */}
-          <div className="hidden md:flex items-center gap-7 text-sm font-medium">
-            <button
-              onClick={() => navigate('/')}
-              className="hover:text-green-300 transition"
-            >
-              HOME
-            </button>
+          <div className="hidden md:flex items-center gap-8 text-sm font-semibold">
 
-            <button
-              onClick={() => navigate('/recycling')}
-              className="hover:text-green-300 transition"
+            <NavLink
+              to="/"
+              className={({ isActive }) =>
+                `transition relative ${
+                  isActive ? 'text-green-400' : 'hover:text-green-300'
+                }`
+              }
             >
-              RECYCLING
-            </button>
+              {({ isActive }) => (
+                <span className="relative">
+                  HOME
+                  {isActive && (
+                    <span className=" left-0 -bottom-1 w-full h-[2px] bg-green-400 rounded"></span>
+                  )}
+                </span>
+              )}
+            </NavLink>
 
-            <button
-              onClick={() => navigate('/report')}
-              className="hover:text-green-300 transition"
+            <NavLink
+              to="/recycling"
+              className={({ isActive }) =>
+                `transition relative ${
+                  isActive ? 'text-green-400' : 'hover:text-green-300'
+                }`
+              }
             >
-              REPORT
-            </button>
+              {({ isActive }) => (
+                <span className="relative">
+                  RECYCLING
+                  {isActive && (
+                    <span className="left-0 -bottom-1 w-full h-[2px] bg-green-400 rounded"></span>
+                  )}
+                </span>
+              )}
+            </NavLink>
 
-            <button
-              onClick={() => navigate('/about')}
-              className="hover:text-green-300 transition"
+            <NavLink
+              to="/report"
+              className={({ isActive }) =>
+                `transition relative ${
+                  isActive ? 'text-green-400' : 'hover:text-green-300'
+                }`
+              }
             >
-              ABOUT
-            </button>
+              {({ isActive }) => (
+                <span className="relative">
+                  REPORT
+                  {isActive && (
+                    <span className="left-0 -bottom-1 w-full h-[2px] bg-green-400 rounded"></span>
+                  )}
+                </span>
+              )}
+            </NavLink>
+
+            <NavLink
+              to="/about"
+              className={({ isActive }) =>
+                `transition relative ${
+                  isActive ? 'text-green-400' : 'hover:text-green-300'
+                }`
+              }
+            >
+              {({ isActive }) => (
+                <span className="relative">
+                  ABOUT
+                  {isActive && (
+                    <span className="left-0 -bottom-1 w-full h-[2px] bg-green-400 rounded"></span>
+                  )}
+                </span>
+              )}
+            </NavLink>
+
           </div>
         </div>
       </div>

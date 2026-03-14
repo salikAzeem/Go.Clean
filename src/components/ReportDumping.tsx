@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { MapPin, Phone, Upload, AlertCircle, Hash } from 'lucide-react';
+import { MapPin, Phone, Upload, Hash, AlertTriangle } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -14,13 +14,19 @@ const ReportDumping = () => {
   const [searchParams] = useSearchParams();
   const [binId, setBinId] = useState("");
   const [location, setLocation] = useState("Fetching location...");
+  const [issueType, setIssueType] = useState("");
 
+  // contact + details state
+  const [contact, setContact] = useState("");
+  const [details, setDetails] = useState("");
+
+  // QR bin detection
   useEffect(() => {
     const id = searchParams.get("binId");
     if (id) setBinId(id);
   }, [searchParams]);
 
-  // 📍 AUTO GPS LOCATION
+  // GPS Auto detection
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -38,19 +44,57 @@ const ReportDumping = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (!issueType) {
+      toast({
+        title: "Please select issue type",
+        description: "Select the type of problem before submitting.",
+      });
+      return;
+    }
+
     setIsSubmitting(true);
 
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    try {
 
-    toast({
-      title: "Report Submitted Successfully!",
-      description: `Report recorded for Dustbin ${binId || "Manual Entry"}.`,
-    });
+      const reportData = {
+        binId,
+        issueType,
+        location,
+        contact,
+        details
+      };
+
+      const response = await fetch("http://localhost:5000/api/report", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(reportData),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        toast({
+          title: "Report Submitted Successfully!",
+          description: "Your complaint has been recorded.",
+        });
+      } else {
+        toast({
+          title: "Submission Failed",
+          description: result.message || "Something went wrong.",
+        });
+      }
+
+    } catch (error) {
+      toast({
+        title: "Server Error",
+        description: "Unable to submit report.",
+      });
+    }
 
     setIsSubmitting(false);
-    (e.target as HTMLFormElement).reset();
-    setBinId("");
-    setLocation("Fetching location...");
   };
 
   return (
@@ -63,7 +107,7 @@ const ReportDumping = () => {
     >
       <div className="w-full max-w-3xl">
 
-        {/* CAMERA → DATA FLOW */}
+        {/* FLOW INDICATOR */}
         <div className="flex items-center justify-center gap-6 mb-6">
           <div className="bg-green-700 text-white px-6 py-2 rounded-lg shadow">
             Camera
@@ -74,33 +118,46 @@ const ReportDumping = () => {
           </div>
         </div>
 
-        {/* WHITE FORM CARD */}
+        {/* FORM CARD */}
         <div className="bg-white rounded-3xl p-8 shadow-2xl">
 
-          <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
-            Report Issue
+          <h2 className="text-3xl font-bold mb-8 text-center text-gray-800">
+            Report Waste Issue
           </h2>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-6">
 
             {/* BIN ID */}
             <div>
-              <Label className="flex items-center gap-2">
+              <Label className="flex items-center gap-2 mb-2">
                 <Hash className="w-4 h-4" />
-                Dustbin Serial
+                Dustbin Serial Number
               </Label>
               <Input value={binId} readOnly className="bg-gray-100" />
             </div>
 
-            {/* ISSUE */}
+            {/* ISSUE TYPE */}
             <div>
-              <Label>Issue</Label>
-              <Input placeholder="Enter issue" required />
+              <Label className="flex items-center gap-2 mb-2">
+                <AlertTriangle className="w-4 h-4" />
+                Issue Type
+              </Label>
+              <select
+                value={issueType}
+                onChange={(e) => setIssueType(e.target.value)}
+                required
+                className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-600"
+              >
+                <option value="">Select Issue Type</option>
+                <option value="Illegal Dumping">Illegal Dumping</option>
+                <option value="Overflowing Bin">Overflowing Bin</option>
+                <option value="Damaged Bin">Damaged Bin</option>
+              </select>
             </div>
 
-            {/* ADDRESS / GPS */}
+            {/* LOCATION */}
             <div>
-              <Label className="flex items-center gap-2">
+              <Label className="flex items-center gap-2 mb-2">
                 <MapPin className="w-4 h-4" />
                 Address (Auto GPS)
               </Label>
@@ -113,26 +170,38 @@ const ReportDumping = () => {
 
             {/* CONTACT */}
             <div>
-              <Label className="flex items-center gap-2">
+              <Label className="flex items-center gap-2 mb-2">
                 <Phone className="w-4 h-4" />
                 Contact Number
               </Label>
-              <Input type="tel" placeholder="Phone number" required />
+              <Input
+                type="tel"
+                placeholder="Enter phone number"
+                value={contact}
+                onChange={(e) => setContact(e.target.value)}
+                required
+              />
             </div>
 
-            {/* SUGGESTION */}
+            {/* DETAILS */}
             <div>
-              <Label>Suggestions</Label>
-              <Textarea rows={3} required />
+              <Label className="mb-2">Additional Details</Label>
+              <Textarea
+                rows={3}
+                placeholder="Describe the issue briefly..."
+                value={details}
+                onChange={(e) => setDetails(e.target.value)}
+                required
+              />
             </div>
 
-            {/* PHOTO */}
+            {/* FILE */}
             <div>
-              <Label className="flex items-center gap-2">
+              <Label className="flex items-center gap-2 mb-2">
                 <Upload className="w-4 h-4" />
-                Upload Photo / Video
+                Upload Photo / Video Evidence
               </Label>
-              <Input type="file" multiple />
+              <Input type="file" accept="image/*,video/*" />
             </div>
 
             <Button
@@ -140,14 +209,16 @@ const ReportDumping = () => {
               className="w-full bg-green-700 hover:bg-green-800 text-white py-3 text-lg rounded-xl"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Submitting..." : "Submit"}
+              {isSubmitting ? "Submitting..." : "Submit Report"}
             </Button>
+
           </form>
         </div>
 
-        <p className="text-center text-white mt-6 text-sm">
-          "True development begins with a clean and conscious community."
+        <p className="text-center text-white mt-6 text-sm italic">
+          True development begins with a clean and conscious community.
         </p>
+
       </div>
     </section>
   );
