@@ -86,12 +86,12 @@ const Hero = () => {
 
 
       {/* CAMERA BUTTON (BOTTOM RIGHT) */}
-      <button
-        onClick={() => navigate("/scan")}
-        className="fixed bottom-6 right-6 sm:bottom-8 sm:right-8 z-20 bg-white hover:bg-gray-100 text-black p-3 sm:p-4 rounded-full shadow-xl transition transform hover:scale-110"
-      >
-        <Camera size={26} />
-      </button>
+     <button
+  onClick={() => navigate("/scan")}
+  className="hidden md:block fixed bottom-8 right-8 z-20 bg-white hover:bg-gray-100 text-black p-4 rounded-full shadow-xl transition transform hover:scale-110"
+>
+  <Camera size={28} />
+</button>
 
     </section>
 
