@@ -38,6 +38,8 @@ const AdminDashboard = () => {
           <tr>
             <th className="p-3">Bin ID</th>
             <th className="p-3">Issue</th>
+            <th className="p-3">Phone</th>
+            <th className="p-3">Description</th>
             <th className="p-3">Location</th>
             <th className="p-3">Date</th>
           </tr>
@@ -48,11 +50,19 @@ const AdminDashboard = () => {
 
           {reports.map((report) => (
 
-            <tr key={report._id} className="border">
+            <tr key={report._id} className="border hover:bg-gray-50">
 
               <td className="p-3">{report.binId || "Manual"}</td>
 
               <td className="p-3">{report.issueType}</td>
+
+              <td className="p-3">
+                {report.phone ? report.phone : "-"}
+              </td>
+
+              <td className="p-3 max-w-xs truncate">
+                {report.description ? report.description : "-"}
+              </td>
 
               <td className="p-3">
 
