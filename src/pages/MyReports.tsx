@@ -2,50 +2,68 @@ import { useEffect, useState } from "react";
 
 const MyReports = () => {
 
-  const [reports,setReports] = useState([]);
+  const [reports, setReports] = useState([]);
 
   const user = JSON.parse(localStorage.getItem("user") || "null");
 
-  useEffect(()=>{
+  useEffect(() => {
 
-    if(!user) return;
+    const fetchReports = async () => {
 
-    fetch(`https://go-clean-8c5n.onrender.com/api/user/${user._id}/reports`)
-      .then(res=>res.json())
-      .then(data=>setReports(data));
+      if (!user) return;
 
-  },[]);
+      try {
+
+        const res = await fetch(
+          `https://go-clean-8c5n.onrender.com/api/user/${user._id}/reports`
+        );
+
+        const data = await res.json();
+
+        setReports(data);
+
+      } catch (error) {
+        console.error("Error fetching reports:", error);
+      }
+
+    };
+
+    fetchReports();
+
+  }, [user]);
 
 
-  if(!user){
-
-    return(
+  if (!user) {
+    return (
       <div className="pt-24 text-center">
-        <h2 className="text-xl font-bold">
-          Please login to view your reports
+        <h2 className="text-xl font-semibold">
+          Please login to see your reports
         </h2>
       </div>
-    )
-
+    );
   }
-
 
   return (
 
-    <div className="pt-24 px-4 md:px-10">
+    <div className="pt-24 px-4 md:px-10 pb-20">
 
       <h1 className="text-2xl font-bold mb-6">
         My Reports
       </h1>
 
+      {reports.length === 0 && (
+        <p className="text-gray-500">
+          No reports submitted yet.
+        </p>
+      )}
 
       <div className="space-y-4">
 
-        {reports.map(report => (
+        {reports.map((report) => (
 
           <div
             key={report._id}
-            className="bg-white shadow rounded-lg p-4 flex justify-between items-center"
+            className="bg-white shadow rounded-xl p-4 flex justify-between items-center"
           >
 
             <div>
@@ -60,15 +78,14 @@ const MyReports = () => {
 
             </div>
 
-
             <span
               className={`px-3 py-1 rounded text-white text-sm
               ${
                 report.status === "Completed"
-                ? "bg-green-600"
-                : report.status === "In Progress"
-                ? "bg-yellow-500"
-                : "bg-gray-500"
+                  ? "bg-green-600"
+                  : report.status === "In Progress"
+                  ? "bg-yellow-500"
+                  : "bg-gray-500"
               }`}
             >
 
