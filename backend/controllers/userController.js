@@ -1,6 +1,9 @@
 import User from "../models/user.js";
 import Report from "../models/Report.js";
 
+/* -----------------------------------
+   Get Reports submitted by a user
+------------------------------------*/
 export const getUserReports = async (req, res) => {
 
   try {
@@ -13,6 +16,8 @@ export const getUserReports = async (req, res) => {
 
   } catch (error) {
 
+    console.error("Error fetching reports:", error);
+
     res.status(500).json({
       message: "Error fetching reports"
     });
@@ -20,6 +25,11 @@ export const getUserReports = async (req, res) => {
   }
 
 };
+
+
+/* -----------------------------------
+   Get Coins of a user
+------------------------------------*/
 export const getUserCoins = async (req, res) => {
 
   try {
@@ -27,9 +37,11 @@ export const getUserCoins = async (req, res) => {
     const user = await User.findById(req.params.id);
 
     if (!user) {
+
       return res.status(404).json({
         message: "User not found"
       });
+
     }
 
     res.json({
@@ -38,7 +50,7 @@ export const getUserCoins = async (req, res) => {
 
   } catch (error) {
 
-    console.error(error);
+    console.error("Error fetching coins:", error);
 
     res.status(500).json({
       message: "Error fetching coins"
