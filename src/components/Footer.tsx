@@ -2,7 +2,7 @@ import logo from "@/assets/logo.jpg";
 
 const Footer = () => {
   return (
-    <footer className="bg-[#1f3b57] text-white py-3 px-4 text-sm">
+    <footer className="hidden md:block bg-[#1f3b57] text-white py-3 px-4 text-sm">
       <div className="container mx-auto flex flex-col md:flex-row justify-between items-center">
 
         {/* LOGO */}

@@ -13,32 +13,34 @@ const BottomBar = () => {
 
     <div className="fixed bottom-0 left-0 w-full bg-[#1f3b57] shadow-2xl md:hidden z-50">
 
-      <div className="flex justify-around items-center h-16 relative">
+      <div className="flex justify-between items-center px-8 h-16 relative">
 
         {/* HOME */}
         <button
           onClick={() => navigate("/")}
-          className={`flex flex-col items-center ${isActive("/")}`}
+          className={`flex flex-col items-center text-xs ${isActive("/")}`}
         >
-          <Home size={24} />
+          <Home size={22} />
+          <span className="mt-1">Home</span>
         </button>
 
 
-        {/* CENTER CAMERA */}
+        {/* CAMERA BUTTON */}
         <button
           onClick={() => navigate("/scan")}
-          className="absolute -top-6 bg-green-500 p-4 rounded-full shadow-xl border-4 border-[#1f3b57]"
+          className="absolute left-1/2 -translate-x-1/2 -top-7 bg-green-500 p-5 rounded-full shadow-xl border-4 border-[#1f3b57] active:scale-95 transition"
         >
-          <Camera size={26} className="text-white" />
+          <Camera size={28} className="text-white" />
         </button>
 
 
         {/* REPORT */}
         <button
           onClick={() => navigate("/report")}
-          className={`flex flex-col items-center ${isActive("/report")}`}
+          className={`flex flex-col items-center text-xs ${isActive("/report")}`}
         >
-          <FileText size={24} />
+          <FileText size={22} />
+          <span className="mt-1">Report</span>
         </button>
 
       </div>

@@ -66,7 +66,7 @@ const Hero = () => {
 
 
       {/* BOTTOM BUTTONS */}
-      <div className="absolute bottom-20 sm:bottom-16 z-10 flex flex-col sm:flex-row gap-4 sm:gap-6">
+      <div className="absolute bottom-32 sm:bottom-20 z-10 flex flex-col sm:flex-row gap-4 sm:gap-6">
 
         <Button
           onClick={() => navigate("/recycling")}
@@ -85,13 +85,13 @@ const Hero = () => {
       </div>
 
 
-      {/* CAMERA BUTTON (BOTTOM RIGHT) */}
-     <button
-  onClick={() => navigate("/scan")}
-  className="hidden md:block fixed bottom-8 right-8 z-20 bg-white hover:bg-gray-100 text-black p-4 rounded-full shadow-xl transition transform hover:scale-110"
->
-  <Camera size={28} />
-</button>
+      {/* CAMERA BUTTON (DESKTOP ONLY) */}
+      <button
+        onClick={() => navigate("/scan")}
+        className="hidden md:block fixed bottom-8 right-8 z-20 bg-white hover:bg-gray-100 text-black p-4 rounded-full shadow-xl transition transform hover:scale-110"
+      >
+        <Camera size={28} />
+      </button>
 
     </section>
 

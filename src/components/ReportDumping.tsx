@@ -43,7 +43,7 @@ const ReportDumping = () => {
 
         },
         () => {
-          setLocation("Location access denied. Enter manually.");
+          setLocation("Location access denied.");
         }
       );
 
@@ -92,7 +92,7 @@ const ReportDumping = () => {
       if (response.ok) {
 
         toast({
-          title: "Report Submitted Successfully!",
+          title: "Report Submitted",
           description: "Your complaint has been recorded."
         });
 
@@ -125,50 +125,40 @@ const ReportDumping = () => {
   return (
 
     <section
-      className="min-h-screen bg-cover bg-center flex items-center justify-center px-4"
+      className="min-h-screen bg-cover bg-center flex items-start justify-center px-4 py-24"
       style={{
         backgroundImage:
           "url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee')"
       }}
     >
 
-      <div className="w-full max-w-3xl">
+      <div className="w-full max-w-xl">
 
-        {/* FLOW */}
-        <div className="flex items-center justify-center gap-6 mb-6">
+        {/* FORM CARD */}
+        <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-2xl">
 
-          <div className="bg-green-700 text-white px-6 py-2 rounded-lg shadow">
-            Camera
-          </div>
-
-          <span className="text-2xl font-bold text-white">→</span>
-
-          <div className="bg-green-700 text-white px-6 py-2 rounded-lg shadow">
-            Data
-          </div>
-
-        </div>
-
-        {/* FORM */}
-        <div className="bg-white rounded-3xl p-8 shadow-2xl">
-
-          <h2 className="text-3xl font-bold mb-8 text-center text-gray-800">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-center text-gray-800">
             Report Waste Issue
           </h2>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-5">
 
             {/* BIN ID */}
             <div>
 
               <Label className="flex items-center gap-2 mb-2">
                 <Hash className="w-4 h-4" />
-                Dustbin Serial Number
+                Dustbin ID
               </Label>
 
-              <Input value={binId} readOnly className="bg-gray-100" />
+              <Input
+                value={binId}
+                readOnly
+                className="bg-gray-100 h-11"
+              />
 
             </div>
+
 
             {/* ISSUE TYPE */}
             <div>
@@ -182,7 +172,7 @@ const ReportDumping = () => {
                 value={issueType}
                 onChange={(e) => setIssueType(e.target.value)}
                 required
-                className="w-full border rounded-md px-3 py-2 focus:ring-2 focus:ring-green-600"
+                className="w-full border rounded-lg px-3 py-3 text-sm focus:ring-2 focus:ring-green-600"
               >
 
                 <option value="">Select Issue Type</option>
@@ -194,17 +184,23 @@ const ReportDumping = () => {
 
             </div>
 
+
             {/* LOCATION */}
             <div>
 
               <Label className="flex items-center gap-2 mb-2">
                 <MapPin className="w-4 h-4" />
-                Address (Auto GPS)
+                GPS Location
               </Label>
 
-              <Input value={location} readOnly />
+              <Input
+                value={location}
+                readOnly
+                className="bg-gray-100 h-11"
+              />
 
             </div>
+
 
             {/* PHONE */}
             <div>
@@ -220,9 +216,11 @@ const ReportDumping = () => {
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 required
+                className="h-11"
               />
 
             </div>
+
 
             {/* DESCRIPTION */}
             <div>
@@ -232,34 +230,39 @@ const ReportDumping = () => {
               </Label>
 
               <Textarea
-                rows={3}
-                placeholder="Describe the issue briefly..."
+                rows={4}
+                placeholder="Describe the issue..."
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 required
+                className="text-sm"
               />
 
             </div>
+
 
             {/* IMAGE */}
             <div>
 
               <Label className="flex items-center gap-2 mb-2">
                 <Upload className="w-4 h-4" />
-                Upload Photo / Video Evidence
+                Upload Photo
               </Label>
 
               <Input
                 type="file"
-                accept="image/*,video/*"
+                accept="image/*"
                 onChange={(e) => setFile(e.target.files[0])}
+                className="h-11"
               />
 
             </div>
 
+
+            {/* SUBMIT BUTTON */}
             <Button
               type="submit"
-              className="w-full bg-green-700 hover:bg-green-800 text-white py-3 text-lg rounded-xl"
+              className="w-full bg-green-700 hover:bg-green-800 text-white py-3 text-base rounded-xl"
               disabled={isSubmitting}
             >
 
