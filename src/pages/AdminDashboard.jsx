@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 const AdminDashboard = () => {
 
   const [reports, setReports] = useState([]);
+  const [selectedImage, setSelectedImage] = useState(null); // ✅ ADDED
 
   const API = "https://go-clean-8c5n.onrender.com/api/report";
 
@@ -34,7 +35,6 @@ const AdminDashboard = () => {
   };
 
   useEffect(() => {
-    // ✅ ADDED (admin protection)
     const isAdmin = localStorage.getItem("admin");
 
     if (!isAdmin) {
@@ -52,6 +52,18 @@ const AdminDashboard = () => {
         Waste Reports Dashboard
       </h1>
 
+      {/* ✅ IMAGE MODAL ADDED */}
+      {selectedImage && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50"
+          onClick={() => setSelectedImage(null)}
+        >
+          <img
+            src={selectedImage}
+            className="max-w-full max-h-[90vh] rounded"
+          />
+        </div>
+      )}
 
       {/* MOBILE VIEW */}
       <div className="md:hidden space-y-5">
@@ -75,7 +87,6 @@ const AdminDashboard = () => {
 
             </div>
 
-            {/* ✅ USER INFO */}
             <p className="text-sm">
               <strong>User:</strong> {report.userId?.name || "Unknown"}
             </p>
@@ -96,14 +107,14 @@ const AdminDashboard = () => {
               <strong>Description:</strong> {report.description || "-"}
             </p>
 
-
+            {/* ✅ ONLY UPDATED THIS BLOCK */}
             {report.image && (
               <img
-                src={`https://go-clean-8c5n.onrender.com/uploads/${report.image}`}
-                className="w-full h-40 object-cover rounded"
+                src={report.image}
+                onClick={() => setSelectedImage(report.image)}
+                className="w-full h-auto max-h-52 object-contain rounded mt-2 cursor-pointer"
               />
             )}
-
 
             <a
               href={report.location}
@@ -113,8 +124,6 @@ const AdminDashboard = () => {
               View Map
             </a>
 
-
-            {/* STATUS */}
             <div className="flex justify-between items-center">
 
               <span className="font-semibold text-sm">
@@ -155,7 +164,6 @@ const AdminDashboard = () => {
       </div>
 
 
-
       {/* DESKTOP TABLE */}
       <div className="hidden md:block overflow-x-auto">
 
@@ -164,10 +172,8 @@ const AdminDashboard = () => {
           <thead className="bg-green-700 text-white">
 
             <tr>
-
               <th className="p-3">User</th>
               <th className="p-3">Email</th>
-
               <th className="p-3">Bin</th>
               <th className="p-3">Issue</th>
               <th className="p-3">Phone</th>
@@ -177,11 +183,9 @@ const AdminDashboard = () => {
               <th className="p-3">Status</th>
               <th className="p-3">Action</th>
               <th className="p-3">Date</th>
-
             </tr>
 
           </thead>
-
 
           <tbody>
 
@@ -189,95 +193,47 @@ const AdminDashboard = () => {
 
               <tr key={report._id} className="border hover:bg-gray-50">
 
-                <td className="p-3">
-                  {report.userId?.name || "Unknown"}
-                </td>
+                <td className="p-3">{report.userId?.name || "Unknown"}</td>
+                <td className="p-3">{report.userId?.email || "-"}</td>
+                <td className="p-3">{report.binId || "Manual"}</td>
+                <td className="p-3">{report.issueType}</td>
+                <td className="p-3">{report.phone || "-"}</td>
+                <td className="p-3 max-w-xs truncate">{report.description || "-"}</td>
 
-                <td className="p-3">
-                  {report.userId?.email || "-"}
-                </td>
-
-                <td className="p-3">
-                  {report.binId || "Manual"}
-                </td>
-
-                <td className="p-3">
-                  {report.issueType}
-                </td>
-
-                <td className="p-3">
-                  {report.phone || "-"}
-                </td>
-
-                <td className="p-3 max-w-xs truncate">
-                  {report.description || "-"}
-                </td>
-
-
+                {/* ✅ ONLY ADDED CLICK HERE */}
                 <td className="p-3">
                   {report.image ? (
                     <img
                       src={report.image}
-                      className="w-16 h-16 object-cover rounded"
+                      onClick={() => setSelectedImage(report.image)}
+                      className="w-16 h-16 object-cover rounded cursor-pointer"
                     />
                   ) : "-"}
                 </td>
 
-
                 <td className="p-3">
-                  <a
-                    href={report.location}
-                    target="_blank"
-                    className="text-blue-600 underline"
-                  >
+                  <a href={report.location} target="_blank" className="text-blue-600 underline">
                     View Map
                   </a>
                 </td>
 
-
                 <td className="p-3 font-semibold">
-
-                  <span
-                    className={`px-2 py-1 rounded text-black text-xs
-                      ${
-                        report.status === "Completed"
-                          ? "bg-green-600"
-                          : report.status === "In Progress"
-                          ? "bg-yellow-500"
-                          : "bg-gray-500"
-                      }`}
-                  >
+                  <span className={`px-2 py-1 rounded text-black text-xs ${
+                    report.status === "Completed"
+                      ? "bg-green-600"
+                      : report.status === "In Progress"
+                      ? "bg-yellow-500"
+                      : "bg-gray-500"
+                  }`}>
                     {report.status || "Pending"}
                   </span>
-
                 </td>
-
 
                 <td className="p-3 flex gap-2">
-
-                  <button
-                    onClick={() => updateStatus(report._id, "Pending")}
-                    className="bg-gray-500 text-black px-2 py-1 rounded text-xs"
-                  >
-                    Pending
-                  </button>
-
-                  <button
-                    onClick={() => updateStatus(report._id, "In Progress")}
-                    className="bg-yellow-500 text-black px-2 py-1 rounded text-xs"
-                  >
-                    Progress
-                  </button>
-
-                  <button
-                    onClick={() => updateStatus(report._id, "Completed")}
-                    className="bg-green-600 text-black px-2 py-1 rounded text-xs"
-                  >
-                    Done
-                  </button>
-
+                  <button onClick={() => updateStatus(report._id, "Pending")} className="bg-gray-500 text-black px-2 py-1 rounded text-xs">Pending</button>
+                  <button onClick={() => updateStatus(report._id, "In Progress")} className="bg-yellow-500 text-black px-2 py-1 rounded text-xs">Progress</button>
+                  <button onClick={() => updateStatus(report._id, "Completed")} className="bg-green-600 text-black px-2 py-1 rounded text-xs">Done</button>
                 </td>
-
 
                 <td className="p-3">
                   {new Date(report.createdAt).toLocaleDateString()}
