@@ -217,7 +217,7 @@ const AdminDashboard = () => {
                 <td className="p-3">
                   {report.image ? (
                     <img
-                      src={`https://go-clean-8c5n.onrender.com/uploads/${report.image}`}
+                      src={report.image}
                       className="w-16 h-16 object-cover rounded"
                     />
                   ) : "-"}
