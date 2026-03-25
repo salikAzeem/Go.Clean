@@ -39,10 +39,10 @@ const MyReports = () => {
   };
 
   const rewards = [
-    { id:1, name:"Tree Plantation Certificate", coins:20 },
-    { id:2, name:"Clean Citizen Badge", coins:40 },
-    { id:3, name:"Smart Citizen Award", coins:100 }
-  ];
+  { id:1, key:"treeCert", coins:20 },
+  { id:2, key:"cleanBadge", coins:40 },
+  { id:3, key:"smartAward", coins:100 }
+];
 
   useEffect(()=>{
 
@@ -106,7 +106,7 @@ const MyReports = () => {
 
         setCoins(data.coins);
 
-        alert(`${t.redeemed}: ${reward.name}`);
+        alert(`${t.redeemed}: ${t[reward.key] || reward.key}`);
 
         const cert = await fetch(
           "https://go-clean-8c5n.onrender.com/api/certificate/generate",
@@ -117,7 +117,8 @@ const MyReports = () => {
             },
             body:JSON.stringify({
               userId:user._id,
-              reward:reward.name
+              reward: t[reward.key] || reward.key,
+lang: localStorage.getItem("lang") || "en"
             })
           }
         );
@@ -262,7 +263,7 @@ const MyReports = () => {
             >
 
               <h3 className="text-lg font-semibold mb-2">
-                {reward.name}
+                {t[reward.key] || reward.key}
               </h3>
 
               <p className="text-gray-500 mb-4">
