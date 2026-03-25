@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
-import langData from "@/lang"; // ✅ ADDED
+import langData from "@/lang";
 
 const AdminDashboard = () => {
 
   const [reports, setReports] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
 
-  // ✅ LANGUAGE SETUP
   const lang = localStorage.getItem("lang") || "en";
   const t = langData[lang];
 
@@ -26,14 +25,10 @@ const AdminDashboard = () => {
     try {
       await fetch(`${API}/${id}/status`, {
         method: "PATCH",
-        headers: {
-          "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status })
       });
-
       fetchReports();
-
     } catch (error) {
       console.error(error);
     }
@@ -62,10 +57,7 @@ const AdminDashboard = () => {
           className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50"
           onClick={() => setSelectedImage(null)}
         >
-          <img
-            src={selectedImage}
-            className="max-w-full max-h-[90vh] rounded"
-          />
+          <img src={selectedImage} className="max-w-full max-h-[90vh] rounded" />
         </div>
       )}
 
@@ -74,21 +66,13 @@ const AdminDashboard = () => {
 
         {reports.map((report) => (
 
-          <div
-            key={report._id}
-            className="bg-white rounded-xl shadow p-4 space-y-3"
-          >
+          <div key={report._id} className="bg-white rounded-xl shadow p-4 space-y-3">
 
             <div className="flex justify-between">
-
-              <span className="font-semibold">
-                {report.issueType}
-              </span>
-
+              <span className="font-semibold">{report.issueType}</span>
               <span className="text-sm text-gray-500">
                 {new Date(report.createdAt).toLocaleDateString()}
               </span>
-
             </div>
 
             <p className="text-sm">
@@ -111,6 +95,7 @@ const AdminDashboard = () => {
               <strong>{t.description}:</strong> {report.description || "-"}
             </p>
 
+            {/* IMAGE */}
             {report.image && (
               <img
                 src={report.image}
@@ -119,13 +104,15 @@ const AdminDashboard = () => {
               />
             )}
 
-            <a
-              href={report.location}
-              target="_blank"
-              className="text-blue-600 underline text-sm"
-            >
-              {t.viewMap}
-            </a>
+            {/* ✅ FIXED LOCATION */}
+            {report.location ? (
+              <button
+                onClick={() => window.open(report.location, "_blank")}
+                className="bg-blue-500 text-white px-3 py-1 rounded text-sm"
+              >
+                📍 {t.viewMap}
+              </button>
+            ) : "-"}
 
             <div className="flex justify-between items-center">
 
@@ -135,24 +122,18 @@ const AdminDashboard = () => {
 
               <div className="flex gap-2">
 
-                <button
-                  onClick={() => updateStatus(report._id, "Pending")}
-                  className="bg-gray-500 text-white px-2 py-1 rounded text-xs"
-                >
+                <button onClick={() => updateStatus(report._id, "Pending")}
+                  className="bg-gray-500 text-white px-2 py-1 rounded text-xs">
                   Pending
                 </button>
 
-                <button
-                  onClick={() => updateStatus(report._id, "In Progress")}
-                  className="bg-yellow-500 text-white px-2 py-1 rounded text-xs"
-                >
+                <button onClick={() => updateStatus(report._id, "In Progress")}
+                  className="bg-yellow-500 text-white px-2 py-1 rounded text-xs">
                   Progress
                 </button>
 
-                <button
-                  onClick={() => updateStatus(report._id, "Completed")}
-                  className="bg-green-600 text-white px-2 py-1 rounded text-xs"
-                >
+                <button onClick={() => updateStatus(report._id, "Completed")}
+                  className="bg-green-600 text-white px-2 py-1 rounded text-xs">
                   Done
                 </button>
 
@@ -173,7 +154,6 @@ const AdminDashboard = () => {
         <table className="w-full border text-sm">
 
           <thead className="bg-green-700 text-white">
-
             <tr>
               <th className="p-3">{t.user}</th>
               <th className="p-3">{t.email}</th>
@@ -187,7 +167,6 @@ const AdminDashboard = () => {
               <th className="p-3">Action</th>
               <th className="p-3">Date</th>
             </tr>
-
           </thead>
 
           <tbody>
@@ -213,10 +192,16 @@ const AdminDashboard = () => {
                   ) : "-"}
                 </td>
 
+                {/* ✅ FIXED LOCATION */}
                 <td className="p-3">
-                  <a href={report.location} target="_blank" className="text-blue-600 underline">
-                    {t.viewMap}
-                  </a>
+                  {report.location ? (
+                    <button
+  onClick={() => window.open(report.location, "_blank")}
+  className="text-blue-600 underline hover:text-blue-800 text-sm font-medium flex items-center gap-1"
+>
+  📍 {t.viewMap || "View Map"}
+</button>
+                  ) : "-"}
                 </td>
 
                 <td className="p-3 font-semibold">
