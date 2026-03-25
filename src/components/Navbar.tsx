@@ -2,11 +2,22 @@ import { useState } from "react";
 import logo from "@/assets/Logo.png";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Menu, X } from "lucide-react";
+import langData from "@/lang"; // ✅ ADDED
 
 const Navbar = () => {
 
   const [open,setOpen] = useState(false);
   const navigate = useNavigate();
+
+  // ✅ LANGUAGE SETUP
+  const [lang, setLang] = useState(localStorage.getItem("lang") || "en");
+  const t = langData[lang];
+
+  const changeLang = (lng) => {
+    localStorage.setItem("lang", lng);
+    setLang(lng);
+    window.location.reload(); // simple refresh
+  };
 
   // get user from localStorage
   const user = JSON.parse(localStorage.getItem("user") || "null");
@@ -34,30 +45,74 @@ const Navbar = () => {
           </NavLink>
 
 
-          {/* DESKTOP MENU */}
           <div className="hidden md:flex items-center gap-8 text-sm font-semibold">
 
-            <NavLink to="/" className="hover:text-green-400">
-              HOME
-            </NavLink>
+  <NavLink
+    to="/"
+    className={({ isActive }) =>
+      isActive ? "text-green-400" : "hover:text-green-400"
+    }
+  >
+    {t.home}
+  </NavLink>
 
-            <NavLink to="/recycling" className="hover:text-green-400">
-              RECYCLING
-            </NavLink>
+  <NavLink
+    to="/recycling"
+    className={({ isActive }) =>
+      isActive ? "text-green-400" : "hover:text-green-400"
+    }
+  >
+    {t.recycling}
+  </NavLink>
 
-            <NavLink to="/report" className="hover:text-green-400">
-              REPORT
-            </NavLink>
+  <NavLink
+    to="/report"
+    className={({ isActive }) =>
+      isActive ? "text-green-400" : "hover:text-green-400"
+    }
+  >
+    {t.report}
+  </NavLink>
 
-            <NavLink to="/about" className="hover:text-green-400">
-              ABOUT
-            </NavLink>
+  <NavLink
+    to="/about"
+    className={({ isActive }) =>
+      isActive ? "text-green-400" : "hover:text-green-400"
+    }
+  >
+    {t.about}
+  </NavLink>
 
-            {user && (
-              <NavLink to="/my-reports" className="hover:text-green-400">
-                MY REPORTS
-              </NavLink>
-            )}
+  {user && (
+    <NavLink
+      to="/my-reports"
+      className={({ isActive }) =>
+        isActive ? "text-green-400" : "hover:text-green-400"
+      }
+    >
+      {t.myReports}
+    </NavLink>
+  )}
+
+
+
+            {/* ✅ LANGUAGE DROPDOWN (DESKTOP) */}
+            <select
+              value={lang}
+              onChange={(e) => changeLang(e.target.value)}
+              className="text-black px-2 py-1 rounded"
+            >
+              <option value="en">ENGLISH</option>
+              <option value="hi">HINDI</option>
+              <option value="bn">BENGALI</option>
+              <option value="ta">TAMIL</option>
+              <option value="te">TELUGU</option>
+              <option value="mr">MARATHI</option>
+              <option value="gu">GUJRATI</option>
+              <option value="kn">KANNADA</option>
+              <option value="ml">MALYALAM</option>
+              <option value="pa">PUNJAB</option>
+            </select>
 
             {/* USER LOGIN STATUS */}
             {user ? (
@@ -65,14 +120,14 @@ const Navbar = () => {
               <div className="flex items-center gap-4">
 
                 <span className="text-green-400">
-                  Welcome {user.name}
+                  {t.welcome} {user.name}
                 </span>
 
                 <button
                   onClick={handleLogout}
                   className="border border-white px-3 py-1 rounded-full hover:bg-white hover:text-[#1f3b57]"
                 >
-                  LOGOUT
+                  {t.logout}
                 </button>
 
               </div>
@@ -84,14 +139,14 @@ const Navbar = () => {
                   to="/login"
                   className="bg-green-600 px-4 py-1 rounded-full hover:bg-green-700"
                 >
-                  LOGIN
+                  {t.login}
                 </NavLink>
 
                 <NavLink
                   to="/signup"
                   className="border border-white px-4 py-1 rounded-full hover:bg-white hover:text-[#1f3b57]"
                 >
-                  SIGNUP
+                  {t.signup}
                 </NavLink>
               </>
 
@@ -118,12 +173,54 @@ const Navbar = () => {
 
         <div className="md:hidden bg-[#1f3b57] text-white px-6 py-4 space-y-4">
 
+          {/* ✅ LANGUAGE DROPDOWN (MOBILE) */}
+          <select
+            value={lang}
+            onChange={(e) => changeLang(e.target.value)}
+            className="text-black px-2 py-1 rounded w-full"
+          >
+            <option value="en">English</option>
+            <option value="hi">Hindi</option>
+            <option value="bn">Bengali</option>
+            <option value="ta">Tamil</option>
+            <option value="te">Telugu</option>
+            <option value="mr">Marathi</option>
+            <option value="gu">Gujarati</option>
+            <option value="kn">Kannada</option>
+            <option value="ml">Malayalam</option>
+            <option value="pa">Punjabi</option>
+          </select>
+
+          <NavLink
+            to="/"
+            onClick={()=>setOpen(false)}
+            className="block"
+          >
+            {t.home}
+          </NavLink>
+
+          <NavLink
+            to="/recycling"
+            onClick={()=>setOpen(false)}
+            className="block"
+          >
+            {t.recycling}
+          </NavLink>
+
+          <NavLink
+            to="/report"
+            onClick={()=>setOpen(false)}
+            className="block"
+          >
+            {t.report}
+          </NavLink>
+
           <NavLink
             to="/about"
             onClick={()=>setOpen(false)}
             className="block"
           >
-            ABOUT
+            {t.about}
           </NavLink>
 
           {user && (
@@ -132,7 +229,7 @@ const Navbar = () => {
               onClick={()=>setOpen(false)}
               className="block"
             >
-              MY REPORTS
+              {t.myReports}
             </NavLink>
           )}
 
@@ -145,7 +242,7 @@ const Navbar = () => {
               }}
               className="block text-left w-full"
             >
-              LOGOUT
+              {t.logout}
             </button>
 
           ) : (
@@ -156,7 +253,7 @@ const Navbar = () => {
                 onClick={()=>setOpen(false)}
                 className="block"
               >
-                LOGIN
+                {t.login}
               </NavLink>
 
               <NavLink
@@ -164,7 +261,7 @@ const Navbar = () => {
                 onClick={()=>setOpen(false)}
                 className="block"
               >
-                SIGNUP
+                {t.signup}
               </NavLink>
             </>
 

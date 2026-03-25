@@ -1,9 +1,14 @@
 import { useEffect, useState } from "react";
+import langData from "@/lang"; // ✅ ADDED
 
 const AdminDashboard = () => {
 
   const [reports, setReports] = useState([]);
-  const [selectedImage, setSelectedImage] = useState(null); // ✅ ADDED
+  const [selectedImage, setSelectedImage] = useState(null);
+
+  // ✅ LANGUAGE SETUP
+  const lang = localStorage.getItem("lang") || "en";
+  const t = langData[lang];
 
   const API = "https://go-clean-8c5n.onrender.com/api/report";
 
@@ -49,10 +54,9 @@ const AdminDashboard = () => {
     <div className="px-4 md:px-10 pt-24 pb-20">
 
       <h1 className="text-2xl md:text-3xl font-bold mb-6 text-center md:text-left">
-        Waste Reports Dashboard
+        {t.dashboard}
       </h1>
 
-      {/* ✅ IMAGE MODAL ADDED */}
       {selectedImage && (
         <div
           className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50"
@@ -88,11 +92,11 @@ const AdminDashboard = () => {
             </div>
 
             <p className="text-sm">
-              <strong>User:</strong> {report.userId?.name || "Unknown"}
+              <strong>{t.user}:</strong> {report.userId?.name || "Unknown"}
             </p>
 
             <p className="text-sm">
-              <strong>Email:</strong> {report.userId?.email || "-"}
+              <strong>{t.email}:</strong> {report.userId?.email || "-"}
             </p>
 
             <p className="text-sm">
@@ -104,10 +108,9 @@ const AdminDashboard = () => {
             </p>
 
             <p className="text-sm">
-              <strong>Description:</strong> {report.description || "-"}
+              <strong>{t.description}:</strong> {report.description || "-"}
             </p>
 
-            {/* ✅ ONLY UPDATED THIS BLOCK */}
             {report.image && (
               <img
                 src={report.image}
@@ -121,13 +124,13 @@ const AdminDashboard = () => {
               target="_blank"
               className="text-blue-600 underline text-sm"
             >
-              View Map
+              {t.viewMap}
             </a>
 
             <div className="flex justify-between items-center">
 
               <span className="font-semibold text-sm">
-                {report.status || "Pending"}
+                {t.status}: {report.status || "Pending"}
               </span>
 
               <div className="flex gap-2">
@@ -172,15 +175,15 @@ const AdminDashboard = () => {
           <thead className="bg-green-700 text-white">
 
             <tr>
-              <th className="p-3">User</th>
-              <th className="p-3">Email</th>
+              <th className="p-3">{t.user}</th>
+              <th className="p-3">{t.email}</th>
               <th className="p-3">Bin</th>
               <th className="p-3">Issue</th>
               <th className="p-3">Phone</th>
-              <th className="p-3">Description</th>
+              <th className="p-3">{t.description}</th>
               <th className="p-3">Image</th>
               <th className="p-3">Location</th>
-              <th className="p-3">Status</th>
+              <th className="p-3">{t.status}</th>
               <th className="p-3">Action</th>
               <th className="p-3">Date</th>
             </tr>
@@ -200,7 +203,6 @@ const AdminDashboard = () => {
                 <td className="p-3">{report.phone || "-"}</td>
                 <td className="p-3 max-w-xs truncate">{report.description || "-"}</td>
 
-                {/* ✅ ONLY ADDED CLICK HERE */}
                 <td className="p-3">
                   {report.image ? (
                     <img
@@ -213,7 +215,7 @@ const AdminDashboard = () => {
 
                 <td className="p-3">
                   <a href={report.location} target="_blank" className="text-blue-600 underline">
-                    View Map
+                    {t.viewMap}
                   </a>
                 </td>
 

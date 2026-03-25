@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import langData from "@/lang"; // ✅ ADDED
 
 const ReportDumping = () => {
 
@@ -24,24 +25,17 @@ const ReportDumping = () => {
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState("");
 
-  /* -------------------------------
-     Get logged in user
-  --------------------------------*/
+  // ✅ LANGUAGE SETUP
+  const lang = localStorage.getItem("lang") || "en";
+  const t = langData[lang];
+
   const user = JSON.parse(localStorage.getItem("user") || "null");
 
-
-  /* -------------------------------
-     Detect bin ID from QR
-  --------------------------------*/
   useEffect(() => {
     const id = searchParams.get("binId");
     if (id) setBinId(id);
   }, [searchParams]);
 
-
-  /* -------------------------------
-     Detect GPS Location
-  --------------------------------*/
   useEffect(() => {
 
     if (navigator.geolocation) {
@@ -64,10 +58,6 @@ const ReportDumping = () => {
 
   }, []);
 
-
-  /* -------------------------------
-     Handle Image Preview
-  --------------------------------*/
   const handleFileChange = (e:any) => {
 
     const selected = e.target.files[0];
@@ -79,18 +69,14 @@ const ReportDumping = () => {
 
   };
 
-
-  /* -------------------------------
-     Submit Report
-  --------------------------------*/
   const handleSubmit = async (e:any) => {
 
     e.preventDefault();
 
     if (!issueType) {
       toast({
-        title: "Select issue type",
-        description: "Please choose the problem type."
+        title: t.selectIssue,
+        description: t.selectIssueDesc
       });
       return;
     }
@@ -107,7 +93,6 @@ const ReportDumping = () => {
       formData.append("phone", phone);
       formData.append("description", description);
 
-      /* attach userId if logged in */
       if (user) {
         formData.append("userId", user._id);
       }
@@ -129,11 +114,10 @@ const ReportDumping = () => {
       if (response.ok) {
 
         toast({
-          title: "Report Submitted",
-          description: "Thank you for helping keep the city clean!"
+          title: t.success,
+          description: t.successDesc
         });
 
-        /* reset form */
         setPhone("");
         setDescription("");
         setIssueType("");
@@ -143,8 +127,8 @@ const ReportDumping = () => {
       } else {
 
         toast({
-          title: "Submission Failed",
-          description: result.message || "Something went wrong"
+          title: t.fail,
+          description: result.message || t.error
         });
 
       }
@@ -152,8 +136,8 @@ const ReportDumping = () => {
     } catch (error) {
 
       toast({
-        title: "Server Error",
-        description: "Unable to submit report"
+        title: t.serverError,
+        description: t.serverErrorDesc
       });
 
     }
@@ -161,7 +145,6 @@ const ReportDumping = () => {
     setIsSubmitting(false);
 
   };
-
 
   return (
 
@@ -175,21 +158,18 @@ const ReportDumping = () => {
 
       <div className="w-full max-w-xl">
 
-        {/* FORM CARD */}
         <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-2xl">
 
           <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-center text-green-600">
-            Report Waste Issue
+            {t.reportTitle}
           </h2>
 
           <form onSubmit={handleSubmit} className="space-y-5">
 
-            {/* BIN ID */}
             <div>
-
               <Label className="flex items-center gap-2 mb-2">
                 <Hash className="w-4 h-4" />
-                Dustbin ID
+                {t.binId}
               </Label>
 
               <Input
@@ -197,16 +177,12 @@ const ReportDumping = () => {
                 readOnly
                 className="bg-gray-100 h-11"
               />
-
             </div>
 
-
-            {/* ISSUE TYPE */}
             <div>
-
               <Label className="flex items-center gap-2 mb-2">
                 <AlertTriangle className="w-4 h-4" />
-                Issue Type
+                {t.issueType}
               </Label>
 
               <select
@@ -216,22 +192,18 @@ const ReportDumping = () => {
                 className="w-full border rounded-lg px-3 py-3 text-sm focus:ring-2 focus:ring-green-600"
               >
 
-                <option value="">Select Issue Type</option>
-                <option value="Illegal Dumping">Illegal Dumping</option>
-                <option value="Overflowing Bin">Overflowing Bin</option>
-                <option value="Damaged Bin">Damaged Bin</option>
+                <option value="">{t.selectIssue}</option>
+                <option value="Illegal Dumping">{t.illegal}</option>
+                <option value="Overflowing Bin">{t.overflow}</option>
+                <option value="Damaged Bin">{t.damaged}</option>
 
               </select>
-
             </div>
 
-
-            {/* LOCATION */}
             <div>
-
               <Label className="flex items-center gap-2 mb-2">
                 <MapPin className="w-4 h-4" />
-                GPS Location
+                {t.location}
               </Label>
 
               <Input
@@ -239,55 +211,43 @@ const ReportDumping = () => {
                 readOnly
                 className="bg-gray-100 h-11"
               />
-
             </div>
 
-
-            {/* PHONE */}
             <div>
-
               <Label className="flex items-center gap-2 mb-2">
                 <Phone className="w-4 h-4" />
-                Contact Number
+                {t.phone}
               </Label>
 
               <Input
                 type="tel"
-                placeholder="Enter phone number"
+                placeholder={t.phonePlaceholder}
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 required
                 className="h-11"
               />
-
             </div>
 
-
-            {/* DESCRIPTION */}
             <div>
-
               <Label className="mb-2">
-                Additional Details
+                {t.description}
               </Label>
 
               <Textarea
                 rows={4}
-                placeholder="Describe the issue..."
+                placeholder={t.descPlaceholder}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 required
                 className="text-sm"
               />
-
             </div>
 
-
-            {/* IMAGE */}
             <div>
-
               <Label className="flex items-center gap-2 mb-2">
                 <Upload className="w-4 h-4" />
-                Upload Photo
+                {t.upload}
               </Label>
 
               <Input
@@ -297,7 +257,6 @@ const ReportDumping = () => {
                 className="h-11"
               />
 
-              {/* preview */}
               {preview && (
                 <img
                   src={preview}
@@ -305,19 +264,14 @@ const ReportDumping = () => {
                   className="mt-3 rounded-lg max-h-40 object-cover"
                 />
               )}
-
             </div>
 
-
-            {/* SUBMIT */}
             <Button
               type="submit"
               className="w-full bg-green-700 hover:bg-green-800 text-white py-3 text-base rounded-xl"
               disabled={isSubmitting}
             >
-
-              {isSubmitting ? "Submitting..." : "Submit Report"}
-
+              {isSubmitting ? t.submitting : t.submit}
             </Button>
 
           </form>

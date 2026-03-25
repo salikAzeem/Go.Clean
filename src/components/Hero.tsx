@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Camera } from "lucide-react";
+import langData from "@/lang"; // ✅ ADDED
 
 import heroEnvironment from "@/assets/hero-environment.png";
 import heroGreenCity from "@/assets/hero-green-city.jpeg";
@@ -16,6 +17,11 @@ const images = [
 const Hero = () => {
 
   const navigate = useNavigate();
+
+  // ✅ LANGUAGE SETUP
+  const lang = localStorage.getItem("lang") || "en";
+  const t = langData[lang];
+
   const [currentImage, setCurrentImage] = useState(0);
 
   useEffect(() => {
@@ -53,13 +59,13 @@ const Hero = () => {
 
         <h1 className="text-2xl sm:text-3xl md:text-5xl font-semibold leading-tight mb-6">
 
-          Cleanliness is not a duty imposed by law,<br />
-          but a responsibility owed to society.
+          {t.heroTitle.split(",")[0]},<br />
+          {t.heroTitle.split(",")[1]}
 
         </h1>
 
         <p className="text-sm sm:text-base md:text-lg italic opacity-90 mb-12">
-          Every small action today creates a cleaner tomorrow.
+          {t.heroSubtitle}
         </p>
 
       </div>
@@ -72,14 +78,14 @@ const Hero = () => {
           onClick={() => navigate("/recycling")}
           className="w-48 sm:w-56 h-12 sm:h-14 bg-green-600 hover:bg-green-700 text-white text-base sm:text-lg rounded-full shadow-lg"
         >
-          Recycling Ideas
+          {t.recycleBtn}
         </Button>
 
         <Button
           onClick={() => navigate("/report")}
           className="w-48 sm:w-56 h-12 sm:h-14 bg-green-600 hover:bg-green-700 text-white text-base sm:text-lg rounded-full shadow-lg"
         >
-          Report
+          {t.reportBtn}
         </Button>
 
       </div>

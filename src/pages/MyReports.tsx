@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import langData from "@/lang"; // ✅ ADDED
 
 const MyReports = () => {
 
@@ -7,12 +8,41 @@ const MyReports = () => {
 
   const user = JSON.parse(localStorage.getItem("user") || "null");
 
+  // ✅ LANGUAGE SETUP
+  const lang = localStorage.getItem("lang") || "en";
+  const t = langData[lang];
+
+  // ✅ NEW: ISSUE TYPE MAPPING
+  const getIssueKey = (issue) => {
+    if (!issue) return issue;
+
+    const map = {
+      "Illegal Dumping": "illegal",
+      "Overflowing Bin": "overflow",
+      "Damaged Bin": "damaged"
+    };
+
+    return map[issue] || issue;
+  };
+
+  // ✅ NEW: STATUS MAPPING
+  const getStatusKey = (status) => {
+    if (!status) return status;
+
+    const map = {
+      "Completed": "completed",
+      "In Progress": "inProgress",
+      "Pending": "pending"
+    };
+
+    return map[status] || status;
+  };
+
   const rewards = [
     { id:1, name:"Tree Plantation Certificate", coins:20 },
     { id:2, name:"Clean Citizen Badge", coins:40 },
     { id:3, name:"Smart Citizen Award", coins:100 }
   ];
-
 
   useEffect(()=>{
 
@@ -29,7 +59,6 @@ const MyReports = () => {
         const reportsData = await reportsRes.json();
         setReports(reportsData);
 
-
         const coinsRes = await fetch(
           `https://go-clean-8c5n.onrender.com/api/user/${user._id}/coins`
         );
@@ -38,9 +67,7 @@ const MyReports = () => {
         setCoins(coinsData.coins);
 
       }catch(error){
-
         console.log(error);
-
       }
 
     };
@@ -50,12 +77,10 @@ const MyReports = () => {
   },[user]);
 
 
-  /* REDEEM + DOWNLOAD CERTIFICATE */
-
-  const redeemReward = async (reward:any)=>{
+  const redeemReward = async (reward)=>{
 
     if(coins < reward.coins){
-      alert("Not enough coins");
+      alert(t.notEnoughCoins);
       return;
     }
 
@@ -81,9 +106,7 @@ const MyReports = () => {
 
         setCoins(data.coins);
 
-        alert(`Reward Redeemed: ${reward.name}`);
-
-        /* DOWNLOAD CERTIFICATE */
+        alert(`${t.redeemed}: ${reward.name}`);
 
         const cert = await fetch(
           "https://go-clean-8c5n.onrender.com/api/certificate/generate",
@@ -100,26 +123,19 @@ const MyReports = () => {
         );
 
         const blob = await cert.blob();
-
         const url = window.URL.createObjectURL(blob);
 
         const a = document.createElement("a");
-
         a.href = url;
         a.download = "certificate.pdf";
-
         a.click();
 
       }else{
-
         alert(data.message);
-
       }
 
     }catch(error){
-
       console.log(error);
-
     }
 
   };
@@ -129,51 +145,46 @@ const MyReports = () => {
 
     return(
       <div className="pt-24 text-center">
-        Please login first
+        {t.loginFirst}
       </div>
     )
 
   }
 
-
-  const completed = reports.filter((r:any)=>r.status === "Completed").length;
-
+  const completed = reports.filter((r)=>r.status === "Completed").length;
 
   return (
 
     <div className="pt-24 px-6 pb-20">
 
       <h1 className="text-3xl font-bold mb-6">
-        My Dashboard
+        {t.myDashboard}
       </h1>
-
-
-      {/* USER INFO */}
 
       <div className="bg-white rounded-xl shadow p-6 mb-8">
 
         <h2 className="text-xl font-semibold mb-4">
-          Welcome {user.name}
+          {t.welcome} {user.name}
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
           <div className="bg-green-100 p-4 rounded-lg">
-            <p className="text-sm">Coins Earned</p>
+            <p className="text-sm">{t.coins}</p>
             <p className="text-2xl font-bold text-green-700">
               {coins}
             </p>
           </div>
 
           <div className="bg-blue-100 p-4 rounded-lg">
-            <p className="text-sm">Reports Submitted</p>
+            <p className="text-sm">{t.submitted}</p>
             <p className="text-2xl font-bold text-blue-700">
               {reports.length}
             </p>
           </div>
 
           <div className="bg-yellow-100 p-4 rounded-lg">
-            <p className="text-sm">Reports Completed</p>
+            <p className="text-sm">{t.completed}</p>
             <p className="text-2xl font-bold text-yellow-700">
               {completed}
             </p>
@@ -184,15 +195,13 @@ const MyReports = () => {
       </div>
 
 
-      {/* REPORT LIST */}
-
       <h2 className="text-2xl font-semibold mb-4">
-        My Reports
+        {t.myReports}
       </h2>
 
       <div className="space-y-4 mb-10">
 
-        {reports.map((report:any)=>{
+        {reports.map((report)=>{
 
           return(
 
@@ -203,8 +212,9 @@ const MyReports = () => {
 
               <div>
 
+                {/* ✅ UPDATED */}
                 <p className="font-semibold">
-                  {report.issueType}
+                  {t[getIssueKey(report.issueType)] || report.issueType}
                 </p>
 
                 <p className="text-sm text-gray-500">
@@ -223,7 +233,8 @@ const MyReports = () => {
                     : "bg-gray-500"
                 }`}
               >
-                {report.status}
+                {/* ✅ UPDATED */}
+                {t[getStatusKey(report.status)] || report.status}
               </span>
 
             </div>
@@ -235,10 +246,8 @@ const MyReports = () => {
       </div>
 
 
-      {/* REWARDS */}
-
       <h2 className="text-2xl font-semibold mb-4">
-        Redeem Rewards
+        {t.rewards}
       </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -257,14 +266,14 @@ const MyReports = () => {
               </h3>
 
               <p className="text-gray-500 mb-4">
-                {reward.coins} coins
+                {reward.coins} {t.coins}
               </p>
 
               <button
                 onClick={()=>redeemReward(reward)}
                 className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
               >
-                Redeem & Download Certificate
+                {t.redeem}
               </button>
 
             </div>
