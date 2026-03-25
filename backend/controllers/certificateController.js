@@ -1,19 +1,15 @@
 import path from "path";
+import fs from "fs";
 import PDFDocument from "pdfkit";
 import User from "../models/user.js";
 
 export const generateCertificate = async (req, res) => {
-
   try {
-
     const { userId, reward, lang = "en" } = req.body;
 
     const user = await User.findById(userId);
-
     if (!user) {
-      return res.status(404).json({
-        message: "User not found"
-      });
+      return res.status(404).json({ message: "User not found" });
     }
 
     // 🌍 TRANSLATIONS
@@ -98,48 +94,43 @@ export const generateCertificate = async (req, res) => {
       margin: 40
     });
 
-    // ✅ FONT FIX
-    const fontPath = path.join(process.cwd(), "backend", "fonts", "NotoSans-Regular.ttf");
-    doc.font(fontPath);
-
     res.setHeader("Content-Type", "application/pdf");
-    res.setHeader(
-      "Content-Disposition",
-      "attachment; filename=certificate.pdf"
-    );
+    res.setHeader("Content-Disposition", "attachment; filename=certificate.pdf");
 
     doc.pipe(res);
 
-    // 🟢 BORDER
-    doc.rect(20, 20, 800, 550)
-      .lineWidth(3)
-      .stroke("#16a34a");
+    // ✅ FONT SAFE LOAD (VERY IMPORTANT FIX)
+    const fontPath = path.join(process.cwd(), "backend", "fonts", "NotoSans-Regular.ttf");
+    if (fs.existsSync(fontPath)) {
+      doc.font(fontPath);
+    } else {
+      console.log("⚠ Font not found, using default");
+    }
 
-    doc.rect(30, 30, 780, 530)
-      .lineWidth(1)
-      .stroke("#16a34a");
+    // 🎨 PREMIUM BORDER
+    doc.rect(20, 20, 800, 550).lineWidth(3).stroke("#16a34a");
+    doc.rect(30, 30, 780, 530).lineWidth(1).stroke("#16a34a");
 
-    // 🟢 LOGO (CENTERED)
+    // 🟢 LOGO SAFE LOAD
     try {
       const logoPath = path.join(process.cwd(), "backend", "uploads", "logo.png");
 
-      doc.image(logoPath, 0, 40, {
-        width: 80,
-        align: "center"
-      });
-
+      if (fs.existsSync(logoPath)) {
+        doc.image(logoPath, 370, 50, { width: 80 });
+      }
     } catch (err) {
-      console.log("Logo not found, skipping...");
+      console.log("Logo error:", err.message);
     }
 
     // 🏆 TITLE
     doc
-      .fontSize(30)
+      .fontSize(32)
       .fillColor("#16a34a")
-      .text(t.title, 0, 140, { align: "center" });
+      .text(t.title, 0, 150, { align: "center" });
 
     // 📜 LINE 1
     doc
+      .moveDown(1)
       .fontSize(16)
       .fillColor("black")
       .text(t.line1, { align: "center" });
@@ -147,7 +138,7 @@ export const generateCertificate = async (req, res) => {
     // 👤 NAME
     doc
       .moveDown(1)
-      .fontSize(26)
+      .fontSize(28)
       .fillColor("#16a34a")
       .text(user.name, { align: "center", underline: true });
 
@@ -166,18 +157,17 @@ export const generateCertificate = async (req, res) => {
       .text(reward, { align: "center" });
 
     // ✍️ SIGNATURE LINES
-    doc.moveTo(200, 420).lineTo(350, 420).stroke();
-    doc.moveTo(500, 420).lineTo(650, 420).stroke();
+    doc.moveTo(200, 430).lineTo(350, 430).stroke();
+    doc.moveTo(500, 430).lineTo(650, 430).stroke();
 
     // ✍️ SIGNATURE TEXT
-    doc.fontSize(12).fillColor("black");
-
-    doc.text("GO.CLEAN", 230, 425);
-    doc.text("GO.CLEAN", 530, 425);
+    doc.fontSize(12);
+    doc.text("GO.CLEAN", 240, 435);
+    doc.text("GO.CLEAN", 540, 435);
 
     doc.fontSize(10);
-    doc.text("Authority Signature", 200, 440);
-    doc.text("Project Head", 520, 440);
+    doc.text("Authority Signature", 200, 450);
+    doc.text("Project Head", 520, 450);
 
     // 📅 DATE
     doc
@@ -195,13 +185,9 @@ export const generateCertificate = async (req, res) => {
     doc.end();
 
   } catch (error) {
-
     console.error(error);
-
     res.status(500).json({
       message: "Certificate generation failed"
     });
-
   }
-
 };
