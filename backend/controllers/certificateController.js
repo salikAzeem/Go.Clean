@@ -15,7 +15,6 @@ export const generateCertificate = async (req, res) => {
       });
     }
 
-    // 🌍 TRANSLATIONS (UNCHANGED + SAFE)
     const translations = {
       en: {
         title: "Certificate of Appreciation",
@@ -102,18 +101,20 @@ export const generateCertificate = async (req, res) => {
 
     doc.pipe(res);
 
-    // ✅ FONT SAFE
+    // ✅ FONT FIX
     const fontPath = path.join(process.cwd(), "backend", "fonts", "NotoSans-Regular.ttf");
+
     if (fs.existsSync(fontPath)) {
-      doc.font(fontPath);
+      doc.registerFont("custom", fontPath);
     }
 
-    // 🎨 PREMIUM DOUBLE BORDER
+    // 🎨 BORDER
     doc.rect(20, 20, 800, 550).lineWidth(4).stroke("#16a34a");
     doc.rect(30, 30, 780, 530).lineWidth(1).stroke("#16a34a");
 
-    // 🟢 WATERMARK (NEW PREMIUM)
+    // 🟢 WATERMARK
     doc
+      .font("custom")
       .fontSize(80)
       .fillColor("#16a34a")
       .opacity(0.08)
@@ -131,12 +132,14 @@ export const generateCertificate = async (req, res) => {
 
     // 🏆 TITLE
     doc
+      .font("custom")
       .fontSize(32)
       .fillColor("#16a34a")
       .text(t.title, 0, 140, { align: "center" });
 
     // 📜 LINE 1
     doc
+      .font("custom")
       .moveDown()
       .fontSize(16)
       .fillColor("black")
@@ -144,6 +147,7 @@ export const generateCertificate = async (req, res) => {
 
     // 👤 NAME
     doc
+      .font("custom")
       .moveDown()
       .fontSize(28)
       .fillColor("#16a34a")
@@ -151,6 +155,7 @@ export const generateCertificate = async (req, res) => {
 
     // 📜 LINE 2
     doc
+      .font("custom")
       .moveDown()
       .fontSize(16)
       .fillColor("black")
@@ -158,23 +163,21 @@ export const generateCertificate = async (req, res) => {
 
     // 🎁 REWARD
     doc
+      .font("custom")
       .moveDown()
       .fontSize(18)
       .fillColor("#16a34a")
       .text(reward, { align: "center" });
 
-    // 🆔 CERTIFICATE ID (NEW FEATURE)
+    // 🆔 CERTIFICATE ID
     const certId = "GC-" + Date.now();
-    doc
-      .fontSize(10)
-      .fillColor("gray")
-      .text(`Certificate ID: ${certId}`, 40, 500);
+    doc.font("custom").fontSize(10).fillColor("gray").text(`Certificate ID: ${certId}`, 40, 500);
 
     // ✍️ SIGNATURE
     doc.moveTo(200, 420).lineTo(350, 420).stroke();
     doc.moveTo(500, 420).lineTo(650, 420).stroke();
 
-    doc.fontSize(12).fillColor("black");
+    doc.font("custom").fontSize(12).fillColor("black");
     doc.text("GO.CLEAN", 240, 425);
     doc.text("GO.CLEAN", 540, 425);
 
@@ -184,6 +187,7 @@ export const generateCertificate = async (req, res) => {
 
     // 📅 DATE
     doc
+      .font("custom")
       .fontSize(12)
       .text(`${t.date}: ${new Date().toLocaleDateString()}`, 0, 500, {
         align: "center"
@@ -191,6 +195,7 @@ export const generateCertificate = async (req, res) => {
 
     // 🏢 FOOTER
     doc
+      .font("custom")
       .fontSize(10)
       .fillColor("gray")
       .text(t.issued, 0, 520, { align: "center" });
