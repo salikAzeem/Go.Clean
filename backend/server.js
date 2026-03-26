@@ -16,6 +16,9 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(cors({
+  origin: "https://go-clean01.netlify.app"
+}));
 
 app.use("/api/report", reportRoutes);
 app.use("/api/auth", authRoutes);
