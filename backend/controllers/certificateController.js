@@ -1,6 +1,7 @@
 import path from "path";
 import fs from "fs";
 import PDFDocument from "pdfkit";
+import QRCode from "qrcode";
 import User from "../models/user.js";
 
 export const generateCertificate = async (req, res) => {
@@ -12,81 +13,24 @@ export const generateCertificate = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // 🌍 TRANSLATIONS
-    const translations = {
-      en: {
-        title: "Certificate of Appreciation",
-        line1: "This certificate is proudly awarded to",
-        line2: "For contributing to environmental cleanliness through",
-        issued: "GO.CLEAN - Municipal Initiative",
-        date: "Date"
-      },
-      hi: {
-        title: "प्रशंसा प्रमाण पत्र",
-        line1: "यह प्रमाण पत्र प्रदान किया जाता है",
-        line2: "पर्यावरण स्वच्छता में योगदान के लिए",
-        issued: "GO.CLEAN द्वारा जारी",
-        date: "तारीख"
-      },
-      bn: {
-        title: "সম্মাননা সনদ",
-        line1: "এই সনদ প্রদান করা হচ্ছে",
-        line2: "পরিবেশ পরিষ্কার রাখতে অবদানের জন্য",
-        issued: "GO.CLEAN দ্বারা প্রদান করা হয়েছে",
-        date: "তারিখ"
-      },
-      ta: {
-        title: "பாராட்டு சான்றிதழ்",
-        line1: "இந்த சான்றிதழ் வழங்கப்படுகிறது",
-        line2: "சுற்றுச்சூழல் சுத்தத்திற்கு பங்களிப்புக்காக",
-        issued: "GO.CLEAN வழங்கியது",
-        date: "தேதி"
-      },
-      te: {
-        title: "ప్రశంస పత్రం",
-        line1: "ఈ సర్టిఫికేట్ అందజేయబడుతుంది",
-        line2: "పర్యావరణ పరిశుభ్రతకు చేసిన సేవకు",
-        issued: "GO.CLEAN ద్వారా జారీ చేయబడింది",
-        date: "తేదీ"
-      },
-      mr: {
-        title: "प्रशंसा प्रमाणपत्र",
-        line1: "हे प्रमाणपत्र प्रदान करण्यात येते",
-        line2: "पर्यावरण स्वच्छतेसाठी योगदानाबद्दल",
-        issued: "GO.CLEAN कडून जारी",
-        date: "दिनांक"
-      },
-      gu: {
-        title: "પ્રશંસા પ્રમાણપત્ર",
-        line1: "આ પ્રમાણપત્ર આપવામાં આવે છે",
-        line2: "પર્યાવરણ સ્વચ્છતા માટે યોગદાન બદલ",
-        issued: "GO.CLEAN દ્વારા જારી",
-        date: "તારીખ"
-      },
-      kn: {
-        title: "ಪ್ರಶಂಸಾ ಪ್ರಮಾಣಪತ್ರ",
-        line1: "ಈ ಪ್ರಮಾಣಪತ್ರವನ್ನು ನೀಡಲಾಗಿದೆ",
-        line2: "ಪರಿಸರ ಸ್ವಚ್ಛತೆಗೆ ಕೊಡುಗೆಗಾಗಿ",
-        issued: "GO.CLEAN ಮೂಲಕ ನೀಡಲಾಗಿದೆ",
-        date: "ದಿನಾಂಕ"
-      },
-      ml: {
-        title: "പ്രശംസ സർട്ടിഫിക്കറ്റ്",
-        line1: "ഈ സർട്ടിഫിക്കറ്റ് നൽകുന്നു",
-        line2: "പരിസ്ഥിതി ശുചിത്വത്തിന് സംഭാവനയ്ക്ക്",
-        issued: "GO.CLEAN നൽകി",
-        date: "തീയതി"
-      },
-      pa: {
-        title: "ਸਨਮਾਨ ਸਰਟੀਫਿਕੇਟ",
-        line1: "ਇਹ ਸਰਟੀਫਿਕੇਟ ਦਿੱਤਾ ਜਾਂਦਾ ਹੈ",
-        line2: "ਵਾਤਾਵਰਣ ਸਫਾਈ ਵਿੱਚ ਯੋਗਦਾਨ ਲਈ",
-        issued: "GO.CLEAN ਵੱਲੋਂ ਜਾਰੀ",
-        date: "ਤਾਰੀਖ"
-      }
+    // ✅ ENGLISH ONLY
+    const t = {
+      title: "Government of India - Clean Initiative",
+      sub: "Certificate of Appreciation",
+      line1: "This certificate is proudly awarded to",
+      line2: "For contributing to environmental cleanliness through",
+      issued: "GO.CLEAN - Municipal Initiative",
+      date: "Date",
+      certId: "Certificate ID"
     };
 
-    const t = translations["en"]; // 🔥 FORCE ENGLISH ALWAYS
+    // 🔥 UNIQUE CERTIFICATE ID
+    const certId = "GC-" + Date.now();
+
+    // 🔥 QR DATA (can be verification URL later)
+    const qrData = `Certificate ID: ${certId} | Name: ${user.name}`;
+
+    const qrImage = await QRCode.toDataURL(qrData);
 
     const doc = new PDFDocument({
       size: "A4",
@@ -99,34 +43,35 @@ export const generateCertificate = async (req, res) => {
 
     doc.pipe(res);
 
-    // ✅ FONT SAFE LOAD (VERY IMPORTANT FIX)
+    // ✅ FONT
     const fontPath = path.join(process.cwd(), "backend", "fonts", "NotoSans-Regular.ttf");
     if (fs.existsSync(fontPath)) {
       doc.font(fontPath);
-    } else {
-      console.log("⚠ Font not found, using default");
     }
 
-    // 🎨 PREMIUM BORDER
-    doc.rect(20, 20, 800, 550).lineWidth(3).stroke("#16a34a");
-    doc.rect(30, 30, 780, 530).lineWidth(1).stroke("#16a34a");
+    // 🎨 BORDER (Govt style)
+    doc.rect(20, 20, 800, 550).lineWidth(4).stroke("#065f46");
+    doc.rect(30, 30, 780, 530).lineWidth(1).stroke("#065f46");
 
-    // 🟢 LOGO SAFE LOAD
+    // 🟢 LOGO
     try {
       const logoPath = path.join(process.cwd(), "backend", "uploads", "logo.png");
-
       if (fs.existsSync(logoPath)) {
-        doc.image(logoPath, 370, 50, { width: 80 });
+        doc.image(logoPath, 370, 40, { width: 70 });
       }
-    } catch (err) {
-      console.log("Logo error:", err.message);
-    }
+    } catch {}
 
-    // 🏆 TITLE
+    // 🏛 HEADER
     doc
-      .fontSize(32)
+      .fontSize(18)
+      .fillColor("#065f46")
+      .text(t.title, { align: "center" });
+
+    doc
+      .moveDown(0.5)
+      .fontSize(28)
       .fillColor("#16a34a")
-      .text(t.title, 0, 150, { align: "center" });
+      .text(t.sub, { align: "center" });
 
     // 📜 LINE 1
     doc
@@ -137,30 +82,39 @@ export const generateCertificate = async (req, res) => {
 
     // 👤 NAME
     doc
-      .moveDown(1)
-      .fontSize(28)
+      .moveDown(0.5)
+      .fontSize(30)
       .fillColor("#16a34a")
       .text(user.name, { align: "center", underline: true });
 
     // 📜 LINE 2
     doc
-      .moveDown(1)
+      .moveDown(0.5)
       .fontSize(16)
       .fillColor("black")
       .text(t.line2, { align: "center" });
 
     // 🎁 REWARD
     doc
-      .moveDown(1)
+      .moveDown(0.5)
       .fontSize(18)
       .fillColor("#16a34a")
       .text(reward, { align: "center" });
 
-    // ✍️ SIGNATURE LINES
+    // 🆔 CERTIFICATE ID
+    doc
+      .moveDown(1)
+      .fontSize(12)
+      .fillColor("black")
+      .text(`${t.certId}: ${certId}`, { align: "center" });
+
+    // 🔳 QR CODE
+    doc.image(qrImage, 650, 400, { width: 100 });
+
+    // ✍️ SIGNATURES
     doc.moveTo(200, 430).lineTo(350, 430).stroke();
     doc.moveTo(500, 430).lineTo(650, 430).stroke();
 
-    // ✍️ SIGNATURE TEXT
     doc.fontSize(12);
     doc.text("GO.CLEAN", 240, 435);
     doc.text("GO.CLEAN", 540, 435);
