@@ -5,7 +5,7 @@ import User from "../models/user.js";
 
 export const generateCertificate = async (req, res) => {
   try {
-    const { userId, reward, lang = "en" } = req.body;
+    const { userId, reward } = req.body;
 
     const user = await User.findById(userId);
     if (!user) {
@@ -86,7 +86,7 @@ export const generateCertificate = async (req, res) => {
       }
     };
 
-    const t = translations[lang] || translations.en;
+    const t = translations["en"]; // 🔥 FORCE ENGLISH ALWAYS
 
     const doc = new PDFDocument({
       size: "A4",
