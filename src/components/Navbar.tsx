@@ -235,7 +235,7 @@ const Navbar = () => {
             onClick={()=>setOpen(false)}
             className="block"
             >
-             
+             FEED
             </NavLink>
 
           {user && (
