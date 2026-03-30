@@ -24,6 +24,9 @@ import ReportDumping from "./components/ReportDumping";
 import Hero from "./components/Hero";
 import RecyclingIdeas from "./components/RecyclingIdeas";
 import About from "./components/About";
+import CommunityFeed from "@/pages/CommunityFeed";
+
+
 
 const queryClient = new QueryClient();
 
@@ -65,6 +68,7 @@ const App = () => (
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/my-reports" element={<MyReports />} />
+            <Route path="/feed" element={<CommunityFeed />} />
           </Routes>
 
           {/* FOOTER */}

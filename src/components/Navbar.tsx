@@ -82,6 +82,14 @@ const Navbar = () => {
   >
     {t.about}
   </NavLink>
+  <NavLink
+  to="/feed"
+  className={({ isActive }) =>
+    isActive ? "text-green-400" : "hover:text-green-400"
+  }
+>
+  FEED
+</NavLink>
 
   {user && (
     <NavLink
@@ -222,6 +230,13 @@ const Navbar = () => {
           >
             {t.about}
           </NavLink>
+          <NavLink
+            to="/feed"
+            onClick={()=>setOpen(false)}
+            className="block"
+            >
+             
+            </NavLink>
 
           {user && (
             <NavLink

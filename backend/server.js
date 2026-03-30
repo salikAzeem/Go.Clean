@@ -9,6 +9,9 @@ import userRoutes from "./routes/userRoutes.js";
 import rewardRoutes from "./routes/rewardRoutes.js";
 import certificateRoutes from "./routes/certificateRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
+import storyRoutes from "./routes/storyRoutes.js";
+
+
 
 dotenv.config();
 
@@ -25,6 +28,7 @@ app.use("/api/rewards", rewardRoutes);
 app.use("/api/certificate", certificateRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/uploads", express.static("uploads"));
+app.use("/api/story", storyRoutes);
 
 mongoose.connect(process.env.MONGO_URI)
 .then(() => console.log("MongoDB Connected"))
