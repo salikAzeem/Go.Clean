@@ -110,16 +110,16 @@ const Navbar = () => {
               onChange={(e) => changeLang(e.target.value)}
               className="text-black px-2 py-1 rounded"
             >
-              <option value="en">ENGLISH</option>
-              <option value="hi">HINDI</option>
-              <option value="bn">BENGALI</option>
-              <option value="ta">TAMIL</option>
-              <option value="te">TELUGU</option>
-              <option value="mr">MARATHI</option>
-              <option value="gu">GUJRATI</option>
-              <option value="kn">KANNADA</option>
-              <option value="ml">MALYALAM</option>
-              <option value="pa">PUNJAB</option>
+  <option value="en">English</option>
+<option value="hi">हिन्दी</option>
+<option value="bn">বাংলা</option>
+<option value="ta">தமிழ்</option>
+<option value="te">తెలుగు</option>
+<option value="mr">मराठी</option>
+<option value="gu">ગુજરાતી</option>
+<option value="kn">ಕನ್ನಡ</option>
+<option value="ml">മലയാളം</option>
+<option value="pa">ਪੰਜਾਬੀ</option>
             </select>
 
             {/* USER LOGIN STATUS */}
@@ -187,16 +187,16 @@ const Navbar = () => {
             onChange={(e) => changeLang(e.target.value)}
             className="text-black px-2 py-1 rounded w-full"
           >
-            <option value="en">English</option>
-            <option value="hi">Hindi</option>
-            <option value="bn">Bengali</option>
-            <option value="ta">Tamil</option>
-            <option value="te">Telugu</option>
-            <option value="mr">Marathi</option>
-            <option value="gu">Gujarati</option>
-            <option value="kn">Kannada</option>
-            <option value="ml">Malayalam</option>
-            <option value="pa">Punjabi</option>
+<option value="en">English</option>
+<option value="hi">हिन्दी</option>
+<option value="bn">বাংলা</option>
+<option value="ta">தமிழ்</option>
+<option value="te">తెలుగు</option>
+<option value="mr">मराठी</option>
+<option value="gu">ગુજરાતી</option>
+<option value="kn">ಕನ್ನಡ</option>
+<option value="ml">മലയാളം</option>
+<option value="pa">ਪੰਜਾਬੀ</option>
           </select>
 
           <NavLink
