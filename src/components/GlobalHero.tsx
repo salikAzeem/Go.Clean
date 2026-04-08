@@ -23,10 +23,10 @@ const images = [
   //sar,
   few,
   hhh,
-  abc,
   //five,
   six,
   seven,
+  abc,
   eight,
   nine
 ];
