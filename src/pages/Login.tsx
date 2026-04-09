@@ -12,6 +12,7 @@ const Login = () => {
   const [password,setPassword] = useState("");
   const [showPassword,setShowPassword] = useState(false);
   const [loading,setLoading] = useState(false);
+  const [googleLoading,setGoogleLoading] = useState(false);
 
   // ✅ NORMAL LOGIN
   const handleLogin = async(e:any)=>{
@@ -44,8 +45,10 @@ const Login = () => {
     setLoading(false);
   };
 
-  // ✅ GOOGLE LOGIN
+  // ✅ GOOGLE LOGIN (FIXED 🔥)
   const handleGoogleLogin = async () => {
+    setGoogleLoading(true);
+
     try {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
@@ -56,8 +59,8 @@ const Login = () => {
         photo: user.photoURL
       };
 
-      // send to backend
-      await fetch("https://go-clean-8c5n.onrender.com/api/auth/google", {
+      // ✅ SEND TO BACKEND
+      const res = await fetch("https://go-clean-8c5n.onrender.com/api/auth/google", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -65,15 +68,24 @@ const Login = () => {
         body: JSON.stringify(userData)
       });
 
-      localStorage.setItem("user", JSON.stringify(userData));
+      const data = await res.json();
 
-      alert(`Welcome ${user.displayName}`);
-      navigate("/");
+      if(res.ok){
+        // ✅ STORE BACKEND USER (WITH _id)
+        localStorage.setItem("user", JSON.stringify(data.user));
+
+        alert(`Welcome ${data.user.name}`);
+        navigate("/");
+      }else{
+        alert(data.message || "Google login failed");
+      }
 
     } catch (error) {
       console.log(error);
       alert("Google login failed");
     }
+
+    setGoogleLoading(false);
   };
 
   return (
@@ -138,15 +150,16 @@ const Login = () => {
         {/* Google Button */}
         <button
           type="button"
+          disabled={googleLoading}
           onClick={handleGoogleLogin}
-          className="w-full flex items-center justify-center gap-3 border border-gray-300 p-3 rounded-lg hover:bg-gray-100 transition-all duration-300 hover:scale-[1.02]"
+          className="w-full flex items-center justify-center gap-3 border border-gray-300 p-3 rounded-lg hover:bg-gray-100 transition-all duration-300 hover:scale-[1.02] disabled:opacity-50"
         >
           <img
             src="https://www.svgrepo.com/show/475656/google-color.svg"
             alt="google"
             className="w-5 h-5"
           />
-          Continue with Google
+          {googleLoading ? "Signing in..." : "Continue with Google"}
         </button>
 
         {/* Signup Link */}
