@@ -1,38 +1,41 @@
 import express from "express";
-import User from "./models/user.js";
+import mongoose from "mongoose";
+import cors from "cors";
+import dotenv from "dotenv";
 
-const router = express.Router();
+import reportRoutes from "./routes/reportRoutes.js";
+import authRoutes from "./routes/authRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
+import rewardRoutes from "./routes/rewardRoutes.js";
+import certificateRoutes from "./routes/certificateRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
+import storyRoutes from "./routes/storyRoutes.js";
 
-// ✅ GOOGLE LOGIN ROUTE
-router.post("/google", async (req, res) => {
-  try {
-    const { name, email, photo } = req.body;
+dotenv.config();
 
-    // check if user exists
-    let user = await User.findOne({ email });
+const app = express();
 
-    // if not → create user
-    if (!user) {
-      user = await User.create({
-        name,
-        email,
-        photo,
-        password: ""
-      });
-    }
+app.use(cors());
+app.use(express.json());
 
-    // ✅ RETURN USER (VERY IMPORTANT)
-    res.status(200).json({
-      success: true,
-      user
-    });
+// ROUTES
+app.use("/api/report", reportRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/user", userRoutes);
+app.use("/api/rewards", rewardRoutes);
+app.use("/api/certificate", certificateRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/uploads", express.static("uploads"));
+app.use("/api/story", storyRoutes);
 
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      message: "Server error"
-    });
-  }
+// DB CONNECTION
+mongoose.connect(process.env.MONGO_URI)
+.then(() => console.log("MongoDB Connected"))
+.catch(err => console.log(err));
+
+// ✅ FIXED PORT
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
-
-export default router; 
